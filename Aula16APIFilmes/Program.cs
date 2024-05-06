@@ -1,5 +1,19 @@
 namespace Aula16APIFilmes
 {
+    class Filme
+    {
+        public string Titulo { get; set; }
+        public int AnoLancamento { get; set; }
+        public double NotaIMDB { get; set; }
+
+        public Filme(string titulo, int anoLancamento, double notaIMDB)
+        {
+            Titulo = titulo;
+            AnoLancamento = anoLancamento;
+            NotaIMDB = notaIMDB;
+        }
+    }
+
     public class Program
     {
         public static void Main(string[] args)
@@ -22,9 +36,6 @@ namespace Aula16APIFilmes
             }
 
             #region Endpoints
-            
-            // GET /
-            app.MapGet("/", () => "Hello World!");
             #endregion
 
             // Execução da aplicação
