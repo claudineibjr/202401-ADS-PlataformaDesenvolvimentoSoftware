@@ -36,6 +36,20 @@ namespace Aula16APIFilmes
             }
 
             #region Endpoints
+            // GET      /filmes
+            app.MapGet("/filmes", () => { /* IMPLEMENTAÇÃO */ });
+
+            // GET      /filmes/{Id}
+            app.MapGet("/filmes/{Id}", (int Id) => { /* IMPLEMENTAÇÃO */ });
+
+            // POST     /filmes
+            app.MapPost("/filmes", (Filme filme) => { /* IMPLEMENTAÇÃO */ });
+
+            // PUT      /filmes/{Id}
+            app.MapPut("/filmes/{Id}", (int id, Filme filme) => { /* IMPLEMENTAÇÃO */ });
+
+            // DELETE   /filmes/{Id}
+            app.MapDelete("/filmes/{Id}", (int id) => { /* IMPLEMENTAÇÃO */ });
             #endregion
 
             // Execução da aplicação
