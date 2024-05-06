@@ -41,10 +41,28 @@ namespace Aula16APIFilmes
 
             #region Endpoints
             // GET      /filmes
-            app.MapGet("/filmes", () =>
+            app.MapGet("/filmes", (string? tituloFilme, double? notaMinimaIMDB) =>
             {
-                // Retorna todos os filmes
-                return Results.Ok(filmes);
+                IEnumerable<Filme> filmesFiltrados = filmes;
+
+                // Verifica se foi passado a nota mínima IMDB do filme como parâmetro de busca
+                if (notaMinimaIMDB is not null)
+                {
+                    // Filtra os filmes por Nota mínima IMDB
+                    filmesFiltrados = filmesFiltrados
+                        .Where(u => u.NotaIMDB >= notaMinimaIMDB);
+                }
+
+                // Verifica se foi passado o título do filme como parâmetro de busca
+                if (!string.IsNullOrEmpty(tituloFilme))
+                {
+                    // Filtra os filmes por Título
+                    filmesFiltrados = filmesFiltrados
+                        .Where(u => u.Titulo.Contains(tituloFilme, StringComparison.OrdinalIgnoreCase));
+                }
+
+                // Retorna os filmes filtrados
+                return Results.Ok(filmesFiltrados);
             });
 
             // GET      /filmes/{Id}
