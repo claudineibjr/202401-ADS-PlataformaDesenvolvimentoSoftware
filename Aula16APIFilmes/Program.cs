@@ -80,6 +80,33 @@ namespace Aula16APIFilmes
                 return Results.Created($"/filmes/{filme.Id}", filme);
             });
 
+            // POST     /filmes/seed
+            app.MapPost("/filmes/seed", () =>
+            {
+                // Cria uma lista de filmes "mockados"
+                Filme entrevistaComVampiro = new Filme("Entrevista com o Vampiro", 1994, 7.6) { Id = 1 };
+                Filme srESraSmith = new Filme("Sr. e Sra. Smith", 2005, 6.5) { Id = 2 };
+                Filme missaoImpossivel = new Filme("Missão Impossível: Protocolo Fantasma", 2011, 7.4) { Id = 3 };
+                Filme topGun = new Filme("Top Gun", 1986, 6.9) { Id = 4 };
+                Filme osVingadores = new Filme("Os Vingadores", 2012, 8.0) { Id = 5 };
+                Filme sherlockHolmes = new Filme("Sherlock Holmes", 2009, 7.6) { Id = 6 };
+
+                // Limpa a lista de filmes
+                filmes.Clear();
+
+                // Adiciona os filmes mockados à lista
+                filmes.AddRange([
+                    entrevistaComVampiro,
+                    srESraSmith,
+                    missaoImpossivel,
+                    topGun,
+                    osVingadores,
+                    sherlockHolmes,
+                ]);
+
+                return Results.Created();
+            });
+
             // PUT      /filmes/{Id}
             app.MapPut("/filmes/{Id}", (int Id, Filme filme) =>
             {
