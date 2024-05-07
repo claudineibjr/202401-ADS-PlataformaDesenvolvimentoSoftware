@@ -1,13 +1,10 @@
 ﻿using Aula16APIFilmes.Database;
 using Aula16APIFilmes.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Aula16APIFilmes.Endpoints
 {
     public static class Filmes
     {
-        private static List<Filme> filmes = new List<Filme>();
-
         public static void RegistrarEndpointsFilme(this IEndpointRouteBuilder rotas)
         {
             // Grupamento de rotas
@@ -16,7 +13,7 @@ namespace Aula16APIFilmes.Endpoints
             // GET      /filmes
             rotaFilmes.MapGet("/", (MeusFilmesDbContext dbContext, string? tituloFilme, double? notaMinimaIMDB) =>
             {
-                IEnumerable<Filme> filmesFiltrados = filmes;
+                IEnumerable<Filme> filmesFiltrados = dbContext.Filmes;
 
                 // Verifica se foi passado a nota mínima IMDB do filme como parâmetro de busca
                 if (notaMinimaIMDB is not null)
@@ -42,7 +39,7 @@ namespace Aula16APIFilmes.Endpoints
             rotaFilmes.MapGet("/{Id}", (MeusFilmesDbContext dbContext, int Id) =>
             {
                 // Procura pelo filme com o Id recebido
-                Filme? filme = filmes.Find(u => u.Id == Id);
+                Filme? filme = dbContext.Filmes.Find(Id);
                 if (filme is null)
                 {
                     // Indica que o filme não foi encontrado
@@ -50,24 +47,15 @@ namespace Aula16APIFilmes.Endpoints
                 }
 
                 // Devolve o filme encontrado
-                return TypedResults.Ok<Filme>(filme);
+                return TypedResults.Ok(filme);
             }).Produces<Filme>();
 
             // POST     /filmes
             rotaFilmes.MapPost("/", (MeusFilmesDbContext dbContext, Filme filme) =>
             {
-                if (filmes.Count() == 0)
-                {
-                    // Atribui o Id 1 ao novo filme já que não tem nenhum filme cadastrado
-                    filme.Id = 1;
-                }
-                else
-                {
-                    // Atribui o Id ao novo filme como o Id máximo + 1
-                    filme.Id = 1 + filmes.Max(u => u.Id);
-                }
-                filmes.Add(filme);
-
+                var novoFilme = dbContext.Filmes.Add(filme);
+                dbContext.SaveChanges();
+                
                 return TypedResults.Created($"/filmes/{filme.Id}", filme);
             });
 
@@ -75,18 +63,15 @@ namespace Aula16APIFilmes.Endpoints
             rotaFilmes.MapPost("/seed", (MeusFilmesDbContext dbContext) =>
             {
                 // Cria uma lista de filmes "mockados"
-                Filme entrevistaComVampiro = new Filme("Entrevista com o Vampiro", 1994, 7.6) { Id = 1 };
-                Filme srESraSmith = new Filme("Sr. e Sra. Smith", 2005, 6.5) { Id = 2 };
-                Filme missaoImpossivel = new Filme("Missão Impossível: Protocolo Fantasma", 2011, 7.4) { Id = 3 };
-                Filme topGun = new Filme("Top Gun", 1986, 6.9) { Id = 4 };
-                Filme osVingadores = new Filme("Os Vingadores", 2012, 8.0) { Id = 5 };
-                Filme sherlockHolmes = new Filme("Sherlock Holmes", 2009, 7.6) { Id = 6 };
-
-                // Limpa a lista de filmes
-                filmes.Clear();
+                Filme entrevistaComVampiro = new Filme("Entrevista com o Vampiro", 1994, 7.6);
+                Filme srESraSmith = new Filme("Sr. e Sra. Smith", 2005, 6.5);
+                Filme missaoImpossivel = new Filme("Missão Impossível: Protocolo Fantasma", 2011, 7.4);
+                Filme topGun = new Filme("Top Gun", 1986, 6.9);
+                Filme osVingadores = new Filme("Os Vingadores", 2012, 8.0);
+                Filme sherlockHolmes = new Filme("Sherlock Holmes", 2009, 7.6);
 
                 // Adiciona os filmes mockados à lista
-                filmes.AddRange([
+                dbContext.Filmes.AddRange([
                     entrevistaComVampiro,
                     srESraSmith,
                     missaoImpossivel,
@@ -95,6 +80,8 @@ namespace Aula16APIFilmes.Endpoints
                     sherlockHolmes,
                 ]);
 
+                dbContext.SaveChanges();
+
                 return TypedResults.Created();
             });
 
@@ -102,8 +89,8 @@ namespace Aula16APIFilmes.Endpoints
             rotaFilmes.MapPut("/{Id}", (MeusFilmesDbContext dbContext, int Id, Filme filme) =>
             {
                 // Encontra o filme especificado buscando pelo Id enviado
-                int indiceFilme = filmes.FindIndex(u => u.Id == Id);
-                if (indiceFilme == -1)
+                Filme? filmeEncontrado = dbContext.Filmes.Find(Id);
+                if (filmeEncontrado is null)
                 {
                     // Indica que o filme não foi encontrado
                     return Results.NotFound();
@@ -112,8 +99,11 @@ namespace Aula16APIFilmes.Endpoints
                 // Mantém o Id do filme como o Id existente
                 filme.Id = Id;
 
-                // Atribui o filme enviado na lista de filmes
-                filmes[indiceFilme] = filme;
+                // Atualiza a lista de filmes
+                dbContext.Entry(filmeEncontrado).CurrentValues.SetValues(filme);
+
+                // Salva as alterações no banco de dados
+                dbContext.SaveChanges();
 
                 return TypedResults.NoContent();
             });
@@ -122,15 +112,17 @@ namespace Aula16APIFilmes.Endpoints
             rotaFilmes.MapDelete("/{Id}", (MeusFilmesDbContext dbContext, int Id) =>
             {
                 // Encontra o filme especificado buscando pelo Id enviado
-                int indiceFilme = filmes.FindIndex(u => u.Id == Id);
-                if (indiceFilme == -1)
+                Filme? filmeEncontrado = dbContext.Filmes.Find(Id);
+                if (filmeEncontrado is null)
                 {
                     // Indica que o filme não foi encontrado
                     return Results.NotFound();
                 }
 
                 // Remove o filme encontrado da lista de filmes
-                filmes.RemoveAt(indiceFilme);
+                dbContext.Filmes.Remove(filmeEncontrado);
+
+                dbContext.SaveChanges();
 
                 return TypedResults.NoContent();
             });
