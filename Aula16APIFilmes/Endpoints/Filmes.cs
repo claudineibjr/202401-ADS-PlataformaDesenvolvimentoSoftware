@@ -4,7 +4,6 @@ namespace Aula16APIFilmes.Endpoints
 {
     public static class Filmes
     {
-
         private static List<Filme> filmes = new List<Filme>();
 
         public static void RegistrarEndpointsFilme(this IEndpointRouteBuilder rotas)
@@ -34,7 +33,7 @@ namespace Aula16APIFilmes.Endpoints
                 }
 
                 // Retorna os filmes filtrados
-                return Results.Ok(filmesFiltrados);
+                return TypedResults.Ok(filmesFiltrados);
             });
 
             // GET      /filmes/{Id}
@@ -49,8 +48,8 @@ namespace Aula16APIFilmes.Endpoints
                 }
 
                 // Devolve o filme encontrado
-                return Results.Ok(filme);
-            });
+                return TypedResults.Ok<Filme>(filme);
+            }).Produces<Filme>();
 
             // POST     /filmes
             rotaFilmes.MapPost("/", (Filme filme) =>
@@ -67,7 +66,7 @@ namespace Aula16APIFilmes.Endpoints
                 }
                 filmes.Add(filme);
 
-                return Results.Created($"/filmes/{filme.Id}", filme);
+                return TypedResults.Created($"/filmes/{filme.Id}", filme);
             });
 
             // POST     /filmes/seed
@@ -94,7 +93,7 @@ namespace Aula16APIFilmes.Endpoints
                     sherlockHolmes,
                 ]);
 
-                return Results.Created();
+                return TypedResults.Created();
             });
 
             // PUT      /filmes/{Id}
@@ -114,7 +113,7 @@ namespace Aula16APIFilmes.Endpoints
                 // Atribui o filme enviado na lista de filmes
                 filmes[indiceFilme] = filme;
 
-                return Results.NoContent();
+                return TypedResults.NoContent();
             });
 
             // DELETE   /filmes/{Id}
@@ -131,7 +130,7 @@ namespace Aula16APIFilmes.Endpoints
                 // Remove o filme encontrado da lista de filmes
                 filmes.RemoveAt(indiceFilme);
 
-                return Results.NoContent();
+                return TypedResults.NoContent();
             });
         }
     }
