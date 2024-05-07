@@ -133,6 +133,6 @@ namespace Aula16APIFilmes.Endpoints
 
                 return Results.NoContent();
             });
-        } 
+        }
     }
 }
