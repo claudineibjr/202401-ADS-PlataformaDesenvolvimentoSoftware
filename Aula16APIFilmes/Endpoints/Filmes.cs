@@ -1,4 +1,6 @@
-﻿using Aula16APIFilmes.Models;
+﻿using Aula16APIFilmes.Database;
+using Aula16APIFilmes.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aula16APIFilmes.Endpoints
 {
@@ -12,7 +14,7 @@ namespace Aula16APIFilmes.Endpoints
             RouteGroupBuilder rotaFilmes = rotas.MapGroup("/filmes");
 
             // GET      /filmes
-            rotaFilmes.MapGet("/", (string? tituloFilme, double? notaMinimaIMDB) =>
+            rotaFilmes.MapGet("/", (MeusFilmesDbContext dbContext, string? tituloFilme, double? notaMinimaIMDB) =>
             {
                 IEnumerable<Filme> filmesFiltrados = filmes;
 
@@ -37,7 +39,7 @@ namespace Aula16APIFilmes.Endpoints
             });
 
             // GET      /filmes/{Id}
-            rotaFilmes.MapGet("/{Id}", (int Id) =>
+            rotaFilmes.MapGet("/{Id}", (MeusFilmesDbContext dbContext, int Id) =>
             {
                 // Procura pelo filme com o Id recebido
                 Filme? filme = filmes.Find(u => u.Id == Id);
@@ -52,7 +54,7 @@ namespace Aula16APIFilmes.Endpoints
             }).Produces<Filme>();
 
             // POST     /filmes
-            rotaFilmes.MapPost("/", (Filme filme) =>
+            rotaFilmes.MapPost("/", (MeusFilmesDbContext dbContext, Filme filme) =>
             {
                 if (filmes.Count() == 0)
                 {
@@ -70,7 +72,7 @@ namespace Aula16APIFilmes.Endpoints
             });
 
             // POST     /filmes/seed
-            rotaFilmes.MapPost("/seed", () =>
+            rotaFilmes.MapPost("/seed", (MeusFilmesDbContext dbContext) =>
             {
                 // Cria uma lista de filmes "mockados"
                 Filme entrevistaComVampiro = new Filme("Entrevista com o Vampiro", 1994, 7.6) { Id = 1 };
@@ -97,7 +99,7 @@ namespace Aula16APIFilmes.Endpoints
             });
 
             // PUT      /filmes/{Id}
-            rotaFilmes.MapPut("/{Id}", (int Id, Filme filme) =>
+            rotaFilmes.MapPut("/{Id}", (MeusFilmesDbContext dbContext, int Id, Filme filme) =>
             {
                 // Encontra o filme especificado buscando pelo Id enviado
                 int indiceFilme = filmes.FindIndex(u => u.Id == Id);
@@ -117,7 +119,7 @@ namespace Aula16APIFilmes.Endpoints
             });
 
             // DELETE   /filmes/{Id}
-            rotaFilmes.MapDelete("/{Id}", (int Id) =>
+            rotaFilmes.MapDelete("/{Id}", (MeusFilmesDbContext dbContext, int Id) =>
             {
                 // Encontra o filme especificado buscando pelo Id enviado
                 int indiceFilme = filmes.FindIndex(u => u.Id == Id);

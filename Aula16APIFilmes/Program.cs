@@ -1,3 +1,4 @@
+using Aula16APIFilmes.Database;
 using Aula16APIFilmes.Endpoints;
 
 namespace Aula16APIFilmes
@@ -12,6 +13,9 @@ namespace Aula16APIFilmes
             // Configuração do Swagger
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Configuração do Banco de Dados
+            builder.Services.AddDbContext<MeusFilmesDbContext>();
 
             // Construção da WebApplication
             var app = builder.Build();
