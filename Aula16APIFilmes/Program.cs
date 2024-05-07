@@ -39,9 +39,12 @@ namespace Aula16APIFilmes
                 app.UseSwaggerUI();
             }
 
+            // Rotas
+            RouteGroupBuilder rotaFilmes = app.MapGroup("/filmes");
+
             #region Endpoints
             // GET      /filmes
-            app.MapGet("/filmes", (string? tituloFilme, double? notaMinimaIMDB) =>
+            rotaFilmes.MapGet("/", (string? tituloFilme, double? notaMinimaIMDB) =>
             {
                 IEnumerable<Filme> filmesFiltrados = filmes;
 
@@ -66,7 +69,7 @@ namespace Aula16APIFilmes
             });
 
             // GET      /filmes/{Id}
-            app.MapGet("/filmes/{Id}", (int Id) =>
+            rotaFilmes.MapGet("/{Id}", (int Id) =>
             {
                 // Procura pelo filme com o Id recebido
                 Filme? filme = filmes.Find(u => u.Id == Id);
@@ -81,7 +84,7 @@ namespace Aula16APIFilmes
             });
 
             // POST     /filmes
-            app.MapPost("/filmes", (Filme filme) =>
+            rotaFilmes.MapPost("/", (Filme filme) =>
             {
                 if (filmes.Count() == 0)
                 {
@@ -99,7 +102,7 @@ namespace Aula16APIFilmes
             });
 
             // POST     /filmes/seed
-            app.MapPost("/filmes/seed", () =>
+            rotaFilmes.MapPost("/seed", () =>
             {
                 // Cria uma lista de filmes "mockados"
                 Filme entrevistaComVampiro = new Filme("Entrevista com o Vampiro", 1994, 7.6) { Id = 1 };
@@ -126,7 +129,7 @@ namespace Aula16APIFilmes
             });
 
             // PUT      /filmes/{Id}
-            app.MapPut("/filmes/{Id}", (int Id, Filme filme) =>
+            rotaFilmes.MapPut("/{Id}", (int Id, Filme filme) =>
             {
                 // Encontra o filme especificado buscando pelo Id enviado
                 int indiceFilme = filmes.FindIndex(u => u.Id == Id);
@@ -146,7 +149,7 @@ namespace Aula16APIFilmes
             });
 
             // DELETE   /filmes/{Id}
-            app.MapDelete("/filmes/{Id}", (int Id) =>
+            rotaFilmes.MapDelete("/{Id}", (int Id) =>
             {
                 // Encontra o filme especificado buscando pelo Id enviado
                 int indiceFilme = filmes.FindIndex(u => u.Id == Id);
