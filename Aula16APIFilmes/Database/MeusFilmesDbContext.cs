@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
+﻿using Microsoft.EntityFrameworkCore;
+using Aula16APIFilmes.Models;
 
 namespace Aula16APIFilmes.Database;
 
 public partial class MeusFilmesDbContext : DbContext
 {
+
+    public DbSet<Filme> Filmes { get; set; }
+
     public MeusFilmesDbContext()
     {
     }
