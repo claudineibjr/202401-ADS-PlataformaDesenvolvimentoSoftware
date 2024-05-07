@@ -60,7 +60,7 @@ namespace Aula16APIFilmes.Endpoints
             });
 
             // POST     /filmes/seed
-            rotaFilmes.MapPost("/seed", (MeusFilmesDbContext dbContext) =>
+            rotaFilmes.MapPost("/seed", (MeusFilmesDbContext dbContext, bool excluirFilmesExistentes = false) =>
             {
                 // Cria uma lista de filmes "mockados"
                 Filme entrevistaComVampiro = new Filme("Entrevista com o Vampiro", 1994, 7.6);
@@ -69,6 +69,12 @@ namespace Aula16APIFilmes.Endpoints
                 Filme topGun = new Filme("Top Gun", 1986, 6.9);
                 Filme osVingadores = new Filme("Os Vingadores", 2012, 8.0);
                 Filme sherlockHolmes = new Filme("Sherlock Holmes", 2009, 7.6);
+
+                // Excluir todos os atuais filmes
+                if (excluirFilmesExistentes)
+                {
+                    dbContext.Filmes.RemoveRange(dbContext.Filmes);
+                }
 
                 // Adiciona os filmes mockados à lista
                 dbContext.Filmes.AddRange([
