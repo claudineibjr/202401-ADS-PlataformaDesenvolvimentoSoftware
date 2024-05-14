@@ -14,6 +14,15 @@ namespace Aula16APIFilmes
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("PermitirTodasOrigens",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    });
+            });
+
             // Configuração do Banco de Dados
             builder.Services.AddDbContext<MeusFilmesDbContext>();
 
@@ -29,6 +38,8 @@ namespace Aula16APIFilmes
 
             // Registro dos endpoints de filme
             app.RegistrarEndpointsFilme();
+
+            app.UseCors("PermitirTodasOrigens");
 
             // Execução da aplicação
             app.Run();
