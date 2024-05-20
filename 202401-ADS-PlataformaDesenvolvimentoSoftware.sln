@@ -5,7 +5,9 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aula16APIFilmes", "Aula16APIFilmes\Aula16APIFilmes.csproj", "{6EE0A4AD-2B9B-46E0-A6AA-0AD5343CA1AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APIArquivos", "APIArquivos\APIArquivos.csproj", "{3CA86E74-4EBC-47E6-8515-86EB2A6B3F88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIArquivos", "APIArquivos\APIArquivos.csproj", "{3CA86E74-4EBC-47E6-8515-86EB2A6B3F88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aula17ExemploDTO", "Aula17ExemploDTO\Aula17ExemploDTO.csproj", "{84EB0D79-4E3D-4BEB-AED0-DC6077C0A07E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{3CA86E74-4EBC-47E6-8515-86EB2A6B3F88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CA86E74-4EBC-47E6-8515-86EB2A6B3F88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CA86E74-4EBC-47E6-8515-86EB2A6B3F88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84EB0D79-4E3D-4BEB-AED0-DC6077C0A07E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84EB0D79-4E3D-4BEB-AED0-DC6077C0A07E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84EB0D79-4E3D-4BEB-AED0-DC6077C0A07E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84EB0D79-4E3D-4BEB-AED0-DC6077C0A07E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
