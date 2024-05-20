@@ -1,5 +1,6 @@
 using Aula16APIFilmes.Database;
 using Aula16APIFilmes.Endpoints;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aula16APIFilmes
 {
@@ -24,7 +25,10 @@ namespace Aula16APIFilmes
             });
 
             // Configuração do Banco de Dados
-            builder.Services.AddDbContext<MeusFilmesDbContext>();
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<MeusFilmesDbContext>(options =>
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+            );
 
             // Construção da WebApplication
             var app = builder.Build();
