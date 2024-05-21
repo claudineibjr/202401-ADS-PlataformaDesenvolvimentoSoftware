@@ -43,6 +43,9 @@ namespace Aula16APIFilmes
             // Registro dos endpoints de filme
             app.RegistrarEndpointsFilme();
 
+            // Registro dos endpoints de usuário
+            app.RegistrarEndpointsUsuario();
+
             app.UseCors("PermitirTodasOrigens");
 
             // Execução da aplicação
