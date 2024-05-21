@@ -1,5 +1,6 @@
 ﻿using Aula16APIFilmes.Database;
 using Aula16APIFilmes.Models;
+using Aula16APIFilmes.Utils;
 
 namespace Aula16APIFilmes.Endpoints
 {
@@ -11,9 +12,9 @@ namespace Aula16APIFilmes.Endpoints
             RouteGroupBuilder rotaFilmes = rotas.MapGroup("/filmes");
 
             // GET      /filmes
-            rotaFilmes.MapGet("/", (MeusFilmesDbContext dbContext, string? tituloFilme, double? notaMinimaIMDB) =>
+            rotaFilmes.MapGet("/", (MeusFilmesDbContext dbContext, string? tituloFilme, double? notaMinimaIMDB, int pagina = 1, int tamanhoPagina = 10) =>
             {
-                IEnumerable<Filme> filmesFiltrados = dbContext.Filmes;
+                IEnumerable<Filme> filmesFiltrados = dbContext.Filmes.AsQueryable();
 
                 // Verifica se foi passado a nota mínima IMDB do filme como parâmetro de busca
                 if (notaMinimaIMDB is not null)
@@ -31,9 +32,13 @@ namespace Aula16APIFilmes.Endpoints
                         .Where(u => u.Titulo.Contains(tituloFilme, StringComparison.OrdinalIgnoreCase));
                 }
 
+                int totalItens = filmesFiltrados.Count();
+                List<Filme> filmes = filmesFiltrados.Skip((pagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToList();
+
                 // Retorna os filmes filtrados
-                return TypedResults.Ok(filmesFiltrados);
-            });
+                ListaPaginada<Filme> listaFilmes = new ListaPaginada<Filme>(filmes, pagina, tamanhoPagina, totalItens);
+                return TypedResults.Ok(listaFilmes);
+            }).Produces<ListaPaginada<Filme>>();
 
             // GET      /filmes/{Id}
             rotaFilmes.MapGet("/{Id}", (MeusFilmesDbContext dbContext, int Id) =>
