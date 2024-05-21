@@ -7,6 +7,8 @@ public partial class MeusFilmesDbContext : DbContext
 {
 
     public DbSet<Filme> Filmes { get; set; }
+    public DbSet<Usuario> Usuarios { get; set; }
+
 
     public MeusFilmesDbContext()
     {
