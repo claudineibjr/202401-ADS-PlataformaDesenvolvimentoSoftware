@@ -1,4 +1,6 @@
-﻿namespace Aula16APIFilmes.Models
+﻿using Aula16APIFilmes.DTOs;
+
+namespace Aula16APIFilmes.Models
 {
     public class Usuario
     {
@@ -12,6 +14,11 @@
             Nome = nome;
             Email = email;
             Senha = senha;
+        }
+
+        public UsuarioDtoOutput GetUsuarioDtoOutput()
+        {
+            return new UsuarioDtoOutput(Id, Nome, Email);
         }
     }
 }

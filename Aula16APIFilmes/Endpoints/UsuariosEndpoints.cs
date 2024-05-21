@@ -1,4 +1,5 @@
 ﻿using Aula16APIFilmes.Database;
+using Aula16APIFilmes.DTOs;
 using Aula16APIFilmes.Models;
 
 namespace Aula16APIFilmes.Endpoints
@@ -16,8 +17,8 @@ namespace Aula16APIFilmes.Endpoints
                 IEnumerable<Usuario> usuariosFiltrados = dbContext.Usuarios;
 
                 // Retorna os usuarios filtrados
-                return TypedResults.Ok(usuariosFiltrados);
-            });
+                return Results.Ok(usuariosFiltrados.Select(u => u.GetUsuarioDtoOutput()).ToList());
+            }).Produces<List<UsuarioDtoOutput>>();
 
             // GET      /usuarios/{Id}
             rotaUsuarios.MapGet("/{Id}", (MeusFilmesDbContext dbContext, int Id) =>
@@ -31,20 +32,21 @@ namespace Aula16APIFilmes.Endpoints
                 }
 
                 // Devolve o usuário encontrado
-                return TypedResults.Ok(usuario);
-            }).Produces<Usuario>();
+                return TypedResults.Ok<UsuarioDtoOutput>(usuario.GetUsuarioDtoOutput());
+            }).Produces<UsuarioDtoOutput>();
 
             // POST     /usuarios
-            rotaUsuarios.MapPost("/", (MeusFilmesDbContext dbContext, Usuario usuario) =>
+            rotaUsuarios.MapPost("/", (MeusFilmesDbContext dbContext, UsuarioDtoInput usuario) =>
             {
-                var novoUsuario = dbContext.Usuarios.Add(usuario);
+                Usuario _novoUsuario = usuario.ToUsuario();
+                var novoUsuario = dbContext.Usuarios.Add(_novoUsuario);
                 dbContext.SaveChanges();
 
-                return TypedResults.Created($"/usuarios/{usuario.Id}", usuario);
-            });
+                return TypedResults.Created<UsuarioDtoOutput>($"/usuarios/{novoUsuario.Entity.Id}", novoUsuario.Entity.GetUsuarioDtoOutput());
+            }).Produces<UsuarioDtoOutput>();
 
             // PUT      /usuarios/{Id}
-            rotaUsuarios.MapPut("/{Id}", (MeusFilmesDbContext dbContext, int Id, Usuario usuario) =>
+            rotaUsuarios.MapPut("/{Id}", (MeusFilmesDbContext dbContext, int Id, UsuarioDtoInput usuario) =>
             {
                 // Encontra o usuário especificado buscando pelo Id enviado
                 Usuario? usuarioEncontrado = dbContext.Usuarios.Find(Id);
@@ -53,9 +55,6 @@ namespace Aula16APIFilmes.Endpoints
                     // Indica que o usuário não foi encontrado
                     return Results.NotFound();
                 }
-
-                // Mantém o Id do usuario como o Id existente
-                usuario.Id = Id;
 
                 // Atualiza a lista de usuarios
                 dbContext.Entry(usuarioEncontrado).CurrentValues.SetValues(usuario);
