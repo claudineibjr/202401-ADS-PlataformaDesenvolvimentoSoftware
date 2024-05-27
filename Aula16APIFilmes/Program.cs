@@ -24,6 +24,9 @@ namespace Aula16APIFilmes
                     });
             });
 
+            builder.Services.AddAuthentication().AddJwtBearer();
+            builder.Services.AddAuthorization();
+
             // Configuração do Banco de Dados
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<MeusFilmesDbContext>(options =>
