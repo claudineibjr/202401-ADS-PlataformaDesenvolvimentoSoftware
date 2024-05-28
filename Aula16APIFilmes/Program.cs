@@ -15,6 +15,7 @@ namespace Aula16APIFilmes
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Configuração do Cors
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("PermitirTodasOrigens",
@@ -23,9 +24,6 @@ namespace Aula16APIFilmes
                         builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                     });
             });
-
-            builder.Services.AddAuthentication().AddJwtBearer();
-            builder.Services.AddAuthorization();
 
             // Configuração do Banco de Dados
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
