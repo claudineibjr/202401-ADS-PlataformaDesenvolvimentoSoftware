@@ -1,10 +1,6 @@
 using Aula16APIFilmes.Database;
 using Aula16APIFilmes.Endpoints;
-using Aula16APIFilmes.Utils;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace Aula16APIFilmes
 {
@@ -28,21 +24,6 @@ namespace Aula16APIFilmes
                         builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                     });
             });
-
-            // Configuração de autenticação e autorização
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SECRET_KEY"]!))
-                    };
-                });
-            builder.Services.AddAuthorization();
 
             // Configuração do Banco de Dados
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
