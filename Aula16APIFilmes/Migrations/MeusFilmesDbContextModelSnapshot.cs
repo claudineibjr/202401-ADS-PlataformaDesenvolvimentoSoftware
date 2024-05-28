@@ -43,7 +43,7 @@ namespace Aula16APIFilmes.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Filmes");
+                    b.ToTable("Filmes", (string)null);
                 });
 
             modelBuilder.Entity("Aula16APIFilmes.Models.Usuario", b =>
@@ -71,7 +71,7 @@ namespace Aula16APIFilmes.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", (string)null);
                 });
 #pragma warning restore 612, 618
         }
