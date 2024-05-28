@@ -38,7 +38,7 @@ namespace Aula16APIFilmes.Endpoints
                 // Retorna os filmes filtrados
                 ListaPaginada<Filme> listaFilmes = new ListaPaginada<Filme>(filmes, pagina, tamanhoPagina, totalItens);
                 return TypedResults.Ok(listaFilmes);
-            }).Produces<ListaPaginada<Filme>>();
+            }).Produces<ListaPaginada<Filme>>().RequireAuthorization();
 
             // GET      /filmes/{Id}
             rotaFilmes.MapGet("/{Id}", (MeusFilmesDbContext dbContext, int Id) =>
@@ -53,7 +53,7 @@ namespace Aula16APIFilmes.Endpoints
 
                 // Devolve o filme encontrado
                 return TypedResults.Ok(filme);
-            }).Produces<Filme>();
+            }).Produces<Filme>().RequireAuthorization();
 
             // POST     /filmes
             rotaFilmes.MapPost("/", (MeusFilmesDbContext dbContext, Filme filme) =>
@@ -62,7 +62,7 @@ namespace Aula16APIFilmes.Endpoints
                 dbContext.SaveChanges();
                 
                 return TypedResults.Created($"/filmes/{filme.Id}", filme);
-            });
+            }).RequireAuthorization();
 
             // POST     /filmes/seed
             rotaFilmes.MapPost("/seed", (MeusFilmesDbContext dbContext, bool excluirFilmesExistentes = false) =>
@@ -94,7 +94,7 @@ namespace Aula16APIFilmes.Endpoints
                 dbContext.SaveChanges();
 
                 return TypedResults.Created();
-            });
+            }).RequireAuthorization();
 
             // PUT      /filmes/{Id}
             rotaFilmes.MapPut("/{Id}", (MeusFilmesDbContext dbContext, int Id, Filme filme) =>
@@ -117,7 +117,7 @@ namespace Aula16APIFilmes.Endpoints
                 dbContext.SaveChanges();
 
                 return TypedResults.NoContent();
-            });
+            }).RequireAuthorization();
 
             // DELETE   /filmes/{Id}
             rotaFilmes.MapDelete("/{Id}", (MeusFilmesDbContext dbContext, int Id) =>
@@ -136,7 +136,7 @@ namespace Aula16APIFilmes.Endpoints
                 dbContext.SaveChanges();
 
                 return TypedResults.NoContent();
-            });
+            }).RequireAuthorization();
         }
     }
 }

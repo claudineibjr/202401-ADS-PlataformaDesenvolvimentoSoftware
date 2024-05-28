@@ -9,7 +9,7 @@ namespace Aula16APIFilmes.Endpoints
         public static void RegistrarEndpointsUsuario(this IEndpointRouteBuilder rotas)
         {
             // Grupamento de rotas
-            RouteGroupBuilder rotaUsuarios = rotas.MapGroup("/usuarios");
+            RouteGroupBuilder rotaUsuarios = rotas.MapGroup("/usuarios").RequireAuthorization();
 
             // GET      /usuairos
             rotaUsuarios.MapGet("/", (MeusFilmesDbContext dbContext) =>
