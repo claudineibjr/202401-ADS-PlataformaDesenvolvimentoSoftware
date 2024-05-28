@@ -1,5 +1,6 @@
 ﻿using Aula16APIFilmes.Database;
 using Aula16APIFilmes.Models;
+using Aula16APIFilmes.Service;
 using Aula16APIFilmes.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -19,13 +20,7 @@ namespace Aula16APIFilmes.Endpoints
             RouteGroupBuilder rotasAuth = rotas.MapGroup("/auth");
 
             rotasAuth.MapGet("/me", (MeusFilmesDbContext dbContext, ClaimsPrincipal usuarioLogado) => {
-                var usuarioLogadoId = usuarioLogado.Claims.FirstOrDefault(c => c.Type == "id");
-                if (usuarioLogadoId is null)
-                {
-                    return Results.NotFound();
-                }
-
-                Usuario? usuarioEncontrado = dbContext.Usuarios.FirstOrDefault(u => u.Id.ToString() == usuarioLogadoId.Value.ToString());
+                Usuario? usuarioEncontrado = UserService.GetUsuarioPorUsuarioLogado(dbContext, usuarioLogado);
                 if (usuarioEncontrado == null)
                 {
                     return Results.NotFound();

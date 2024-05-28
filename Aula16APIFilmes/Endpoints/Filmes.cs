@@ -1,6 +1,8 @@
 ﻿using Aula16APIFilmes.Database;
 using Aula16APIFilmes.Models;
+using Aula16APIFilmes.Service;
 using Aula16APIFilmes.Utils;
+using System.Security.Claims;
 
 namespace Aula16APIFilmes.Endpoints
 {
@@ -12,9 +14,21 @@ namespace Aula16APIFilmes.Endpoints
             RouteGroupBuilder rotaFilmes = rotas.MapGroup("/filmes");
 
             // GET      /filmes
-            rotaFilmes.MapGet("/", (MeusFilmesDbContext dbContext, string? tituloFilme, double? notaMinimaIMDB, int pagina = 1, int tamanhoPagina = 10) =>
+            rotaFilmes.MapGet("/", (MeusFilmesDbContext dbContext, ClaimsPrincipal _usuarioLogado, string? tituloFilme, double? notaMinimaIMDB, int pagina = 1, int tamanhoPagina = 10) =>
             {
                 IEnumerable<Filme> filmesFiltrados = dbContext.Filmes.AsQueryable();
+
+                // Obtém o usuário logado para obter os filmes de acordo com a classificação indicativa
+                Usuario? usuarioLogado = UserService.GetUsuarioPorUsuarioLogado(dbContext, _usuarioLogado);
+                if (usuarioLogado == null)
+                {
+                    return Results.NotFound();
+                }
+                int idadeUsuarioLogado = UsuarioUtils.CalcularIdade(usuarioLogado.DataNascimento);
+
+                // Filtra os filmes pela classificação indicativa
+                filmesFiltrados = filmesFiltrados
+                    .Where(f => FilmeUtils.UsuarioPodeAssistirFilme(f, idadeUsuarioLogado));
 
                 // Verifica se foi passado a nota mínima IMDB do filme como parâmetro de busca
                 if (notaMinimaIMDB is not null)
@@ -41,13 +55,26 @@ namespace Aula16APIFilmes.Endpoints
             }).Produces<ListaPaginada<Filme>>().RequireAuthorization();
 
             // GET      /filmes/{Id}
-            rotaFilmes.MapGet("/{Id}", (MeusFilmesDbContext dbContext, int Id) =>
+            rotaFilmes.MapGet("/{Id}", (MeusFilmesDbContext dbContext, ClaimsPrincipal _usuarioLogado, int Id) =>
             {
                 // Procura pelo filme com o Id recebido
                 Filme? filme = dbContext.Filmes.Find(Id);
                 if (filme is null)
                 {
                     // Indica que o filme não foi encontrado
+                    return Results.NotFound();
+                }
+
+                // Obtém o usuário logado para verificar se o usuário pode assistir o filme de acordo com a classificação indicativa
+                Usuario? usuarioLogado = UserService.GetUsuarioPorUsuarioLogado(dbContext, _usuarioLogado);
+                if (usuarioLogado == null)
+                {
+                    return Results.NotFound();
+                }
+                int idadeUsuarioLogado = UsuarioUtils.CalcularIdade(usuarioLogado.DataNascimento);
+
+                if (!FilmeUtils.UsuarioPodeAssistirFilme(filme, idadeUsuarioLogado))
+                {
                     return Results.NotFound();
                 }
 
@@ -75,6 +102,8 @@ namespace Aula16APIFilmes.Endpoints
                 Filme osVingadores = new Filme("Os Vingadores", 2012, 8.0, "12");
                 Filme sherlockHolmes = new Filme("Sherlock Holmes", 2009, 7.6, "14");
                 Filme loboWallStreet = new Filme("O Lobo de Wall Street", 2013, 8.2, "18");
+                Filme fugaDasGalinhas = new Filme("A Fuga das Galinhas", 2000, 7.1, "L");
+
 
                 // Excluir todos os atuais filmes
                 if (excluirFilmesExistentes)
@@ -91,6 +120,7 @@ namespace Aula16APIFilmes.Endpoints
                     osVingadores,
                     sherlockHolmes,
                     loboWallStreet,
+                    fugaDasGalinhas,
                 ]);
 
                 dbContext.SaveChanges();
