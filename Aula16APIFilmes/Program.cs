@@ -1,5 +1,6 @@
 using Aula16APIFilmes.Database;
 using Aula16APIFilmes.Endpoints;
+using Aula16APIFilmes.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -49,6 +50,9 @@ namespace Aula16APIFilmes
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
             );
 
+            // Registrar o TokenService
+            builder.Services.AddSingleton<ITokenService, TokenService>();
+
             // Construção da WebApplication
             var app = builder.Build();
 
@@ -64,6 +68,9 @@ namespace Aula16APIFilmes
 
             // Registro dos endpoints de usuário
             app.RegistrarEndpointsUsuario();
+
+            // Registro dos endpoints de autenticação
+            app.RegistrarEndpointsAutenticacao();
 
             app.UseCors("PermitirTodasOrigens");
 
