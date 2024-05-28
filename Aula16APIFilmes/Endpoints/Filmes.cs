@@ -68,12 +68,13 @@ namespace Aula16APIFilmes.Endpoints
             rotaFilmes.MapPost("/seed", (MeusFilmesDbContext dbContext, bool excluirFilmesExistentes = false) =>
             {
                 // Cria uma lista de filmes "mockados"
-                Filme entrevistaComVampiro = new Filme("Entrevista com o Vampiro", 1994, 7.6);
-                Filme srESraSmith = new Filme("Sr. e Sra. Smith", 2005, 6.5);
-                Filme missaoImpossivel = new Filme("Missão Impossível: Protocolo Fantasma", 2011, 7.4);
-                Filme topGun = new Filme("Top Gun", 1986, 6.9);
-                Filme osVingadores = new Filme("Os Vingadores", 2012, 8.0);
-                Filme sherlockHolmes = new Filme("Sherlock Holmes", 2009, 7.6);
+                Filme entrevistaComVampiro = new Filme("Entrevista com o Vampiro", 1994, 7.6, "18");
+                Filme srESraSmith = new Filme("Sr. e Sra. Smith", 2005, 6.5, "14");
+                Filme missaoImpossivel = new Filme("Missão Impossível: Protocolo Fantasma", 2011, 7.4, "12");
+                Filme topGun = new Filme("Top Gun", 1986, 6.9, "12");
+                Filme osVingadores = new Filme("Os Vingadores", 2012, 8.0, "12");
+                Filme sherlockHolmes = new Filme("Sherlock Holmes", 2009, 7.6, "14");
+                Filme loboWallStreet = new Filme("O Lobo de Wall Street", 2013, 8.2, "18");
 
                 // Excluir todos os atuais filmes
                 if (excluirFilmesExistentes)
@@ -89,6 +90,7 @@ namespace Aula16APIFilmes.Endpoints
                     topGun,
                     osVingadores,
                     sherlockHolmes,
+                    loboWallStreet,
                 ]);
 
                 dbContext.SaveChanges();
