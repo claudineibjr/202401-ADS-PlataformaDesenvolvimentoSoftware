@@ -62,7 +62,7 @@ namespace Aula16APIFilmes.Endpoints
                 dbContext.SaveChanges();
                 
                 return TypedResults.Created($"/filmes/{filme.Id}", filme);
-            }).RequireAuthorization();
+            }).RequireAuthorization("admin");
 
             // POST     /filmes/seed
             rotaFilmes.MapPost("/seed", (MeusFilmesDbContext dbContext, bool excluirFilmesExistentes = false) =>
@@ -94,7 +94,7 @@ namespace Aula16APIFilmes.Endpoints
                 dbContext.SaveChanges();
 
                 return TypedResults.Created();
-            }).RequireAuthorization();
+            }).RequireAuthorization("admin");
 
             // PUT      /filmes/{Id}
             rotaFilmes.MapPut("/{Id}", (MeusFilmesDbContext dbContext, int Id, Filme filme) =>
@@ -117,7 +117,7 @@ namespace Aula16APIFilmes.Endpoints
                 dbContext.SaveChanges();
 
                 return TypedResults.NoContent();
-            }).RequireAuthorization();
+            }).RequireAuthorization("admin");
 
             // DELETE   /filmes/{Id}
             rotaFilmes.MapDelete("/{Id}", (MeusFilmesDbContext dbContext, int Id) =>
@@ -136,7 +136,7 @@ namespace Aula16APIFilmes.Endpoints
                 dbContext.SaveChanges();
 
                 return TypedResults.NoContent();
-            }).RequireAuthorization();
+            }).RequireAuthorization("admin");
         }
     }
 }

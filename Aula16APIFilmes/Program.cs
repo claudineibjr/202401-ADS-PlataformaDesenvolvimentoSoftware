@@ -1,5 +1,6 @@
 using Aula16APIFilmes.Database;
 using Aula16APIFilmes.Endpoints;
+using Aula16APIFilmes.Models;
 using Aula16APIFilmes.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +43,11 @@ namespace Aula16APIFilmes
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SECRET_KEY"]!))
                     };
                 });
-            builder.Services.AddAuthorization();
+            // builder.Services.AddAuthorization();
+            builder.Services.AddAuthorizationBuilder()
+                .AddPolicy("admin", 
+                    policy => policy.RequireRole(PerfilUsuarioEnum.Administrador.ToString())
+                );
 
             // Configuração do Banco de Dados
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
