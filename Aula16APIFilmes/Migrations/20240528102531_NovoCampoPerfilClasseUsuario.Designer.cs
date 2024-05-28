@@ -3,6 +3,7 @@ using Aula16APIFilmes.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aula16APIFilmes.Migrations
 {
     [DbContext(typeof(MeusFilmesDbContext))]
-    partial class MeusFilmesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240528102531_NovoCampoPerfilClasseUsuario")]
+    partial class NovoCampoPerfilClasseUsuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
