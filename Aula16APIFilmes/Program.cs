@@ -5,6 +5,7 @@ using Aula16APIFilmes.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace Aula16APIFilmes
@@ -13,14 +14,41 @@ namespace Aula16APIFilmes
     {
         public static void Main(string[] args)
         {
-            // Criação da WebApplication
+            // Criaï¿½ï¿½o da WebApplication
             var builder = WebApplication.CreateBuilder(args);
 
-            // Configuração do Swagger
+            // Configuraï¿½ï¿½o do Swagger
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Filmes API", Version = "v1" });
 
-            // Configuração do Cors
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
+
+            // Configuraï¿½ï¿½o do Cors
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("PermitirTodasOrigens",
@@ -30,7 +58,7 @@ namespace Aula16APIFilmes
                     });
             });
 
-            // Configuração de autenticação e autorização
+            // Configuraï¿½ï¿½o de autenticaï¿½ï¿½o e autorizaï¿½ï¿½o
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -49,7 +77,7 @@ namespace Aula16APIFilmes
                     policy => policy.RequireRole(PerfilUsuarioEnum.Administrador.ToString())
                 );
 
-            // Configuração do Banco de Dados
+            // Configuraï¿½ï¿½o do Banco de Dados
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<MeusFilmesDbContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
@@ -58,12 +86,12 @@ namespace Aula16APIFilmes
             // Registrar o TokenService
             builder.Services.AddSingleton<ITokenService, TokenService>();
 
-            // Construção da WebApplication
+            // Construï¿½ï¿½o da WebApplication
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
             {
-                // Inicialização do Swagger
+                // Inicializaï¿½ï¿½o do Swagger
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
@@ -71,15 +99,15 @@ namespace Aula16APIFilmes
             // Registro dos endpoints de filme
             app.RegistrarEndpointsFilme();
 
-            // Registro dos endpoints de usuário
+            // Registro dos endpoints de usuï¿½rio
             app.RegistrarEndpointsUsuario();
 
-            // Registro dos endpoints de autenticação
+            // Registro dos endpoints de autenticaï¿½ï¿½o
             app.RegistrarEndpointsAutenticacao();
 
             app.UseCors("PermitirTodasOrigens");
 
-            // Execução da aplicação
+            // Execuï¿½ï¿½o da aplicaï¿½ï¿½o
             app.Run();
         }
     }
